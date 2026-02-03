@@ -44,8 +44,6 @@ const RESOURCES = [
   "manifest.json",
   "version.json"];
 
-
-// Установка SW и кэширование ядра
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
@@ -60,7 +58,6 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Активация: удаляем старые кэши
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
@@ -76,9 +73,7 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Интерцепция запросов
 self.addEventListener('fetch', (event) => {
-  // Для переходов (navigation) всегда index.html
   if (event.request.mode === 'navigate') {
     event.respondWith(
       caches.match('index.html').then((response) => {
@@ -91,7 +86,6 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Для остальных — cache first
   event.respondWith(
     caches.match(event.request).then((response) => {
       return (
